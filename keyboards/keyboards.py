@@ -1,28 +1,23 @@
 from aiogram import types
 
 
-button1 = types.KeyboardButton(text='/start')
-button2 = types.KeyboardButton(text='/flower')
-button3 = types.KeyboardButton(text='Инфо')
-button4 = types.KeyboardButton(text='Покажи лису')
-button5 = types.KeyboardButton(text='Закрыть')
-buttonMy1 = types.KeyboardButton(text='/story')
-buttonMy2 = types.KeyboardButton(text='Погода')
-buttonMy3 = types.KeyboardButton(text='/date')
+button1 = types.KeyboardButton(text='/новости')
+button2 = types.KeyboardButton(text='/соревнования')
+button3 = types.KeyboardButton(text='/бронь')
+button4 = types.KeyboardButton(text='/адреса')
+button5 = types.KeyboardButton(text='О нас')
+buttonPlay1 = types.KeyboardButton(text='/участвовать')
+buttonPlay2 = types.KeyboardButton(text='/выход')
 
-keyboard1 = [
+keyboardStart = [
     [button1, button2, button3],
     [button4, button5],
 ]
 
-keyboard2 = [
-    [button3, button4],
+keyboardPlay = [
+    [buttonPlay1, buttonPlay2],
 ]
 
-keyboard3 = [
-    [buttonMy1, buttonMy2, buttonMy3, button5],
-]
 
-kb1 = types.ReplyKeyboardMarkup(keyboard=keyboard1, resize_keyboard=True)
-kb2 = types.ReplyKeyboardMarkup(keyboard=keyboard2, resize_keyboard=True)
-kb3 = types.ReplyKeyboardMarkup(keyboard=keyboard3, resize_keyboard=True)
+kbMain = types.ReplyKeyboardMarkup(keyboard=keyboardStart, resize_keyboard=True)
+kbPlay = types.ReplyKeyboardMarkup(keyboard=keyboardPlay, resize_keyboard=True)
