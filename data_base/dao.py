@@ -65,6 +65,49 @@ async def get_courts(session, loc_name: str) -> List[Dict[str, Any]]:
         logger.error(f"Ошибка при получении Кортов: {e}")
         return []
 
+
+@connection
+async def get_date(session, court_name: str) -> List[Dict[str, Any]]:
+    """Функция для получения Дат"""
+    try:
+        courts_req = await session.execute(select(Court).filter_by(court_name=court_name,))
+        court = courts_req.scalars().first()
+        print(f'{court}___1')
+        reserves_req = await session.execute(select(Reserve).filter_by(court_id=court.id,))
+        reserves = reserves_req.scalars().all()
+        print(f'{reserves}___2')
+
+        reserves_list = [
+            {
+                'date_reserve': reserve.date_reserve,
+            } for reserve in reserves
+        ]
+        return reserves_list
+    except SQLAlchemyError as e:
+        logger.error(f"Ошибка при получении доступных окон: {e}")
+        return []
+
+
+@connection
+async def get_time(session, court_name: str) -> List[Dict[str, Any]]:
+    """Функция для получения Кортов"""
+    try:
+        courts_req = await session.execute(select(Court).filter_by(name=court_name,))
+        court = courts_req.scalars().first()
+        reserves_req = await session.execute(select(Reserve).filter_by(court_id=court.id,))
+        reserves = reserves_req.scalars().all()
+
+        reserves_list = [
+            {
+                'reserves_name': reserve.court_name,
+            } for reserve in reserves
+        ]
+        return reserves_list
+    except SQLAlchemyError as e:
+        logger.error(f"Ошибка при получении доступных окон: {e}")
+        return []
+
+
 @connection
 async def get_news(session) -> List[Dict[str, Any]]:
     """Функция для получения списка опубликованных Новостей"""

@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from create_bot import bot
 from data_base.dao import get_news, get_post
 from keyboards.reply_menu_kb import main_kb, news1_kb
-from keyboards.gen_other_kb import generate_news_keyboard
+from keyboards.gen_other_kb import generate_news_kb
 from utils.utils import send_post
 
 show_news_router = Router()
@@ -21,7 +21,7 @@ async def show_all_news(message: Message, state: FSMContext):
     await state.clear()
     all_news = await get_news()
     if all_news:
-        await message.answer('Новости:', reply_markup=generate_news_keyboard(all_news))
+        await message.answer('Новости:', reply_markup=generate_news_kb(all_news))
     else:
         await message.answer('Нет информации для отображения!', reply_markup=main_kb())
 

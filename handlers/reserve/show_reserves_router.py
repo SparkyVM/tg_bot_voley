@@ -4,12 +4,12 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, CallbackQuery
 
 from create_bot import bot
-from data_base.dao import get_reserves_by_user, get_locations, get_courts
-from utils.utils import send_reserves, send_courts
+from data_base.dao import get_reserves_by_user, get_locations, get_courts, get_date, get_time
+from utils.utils import send_reserves, send_courts, send_date, send_time
 
 from keyboards.reply_menu_kb import main_kb
-from keyboards.reply_reserve_kb import start_res1
-from keyboards.gen_other_kb import generate_locations_keyboard
+from keyboards.reply_reserve_kb import reserve_start, reserve_time
+from keyboards.gen_other_kb import generate_locations_kb, generate_date_kb
 
 show_reserves_router = Router()
 
@@ -21,10 +21,11 @@ class FindReservesStates(StatesGroup):
 @show_reserves_router.message(F.text == '/бронь')
 async def start_views_reserves(message: Message, state: FSMContext):
     await state.clear()
-    await message.answer('Выбери действие', reply_markup=start_res1())
+    await message.answer('Выбери действие', reply_markup=reserve_start())
 
 @show_reserves_router.message(F.text == '📋 Вывести брони')
 async def find_all_reserves(message: Message, state: FSMContext):
+    """Функция вывода всех броней пользователя"""
     await state.clear()
     all_reserves = await get_reserves_by_user(user_id=message.from_user.id)
     if all_reserves:
@@ -39,7 +40,7 @@ async def send_reserve_loc(message: Message, state: FSMContext):
     await state.clear()
     all_locations = await get_locations()       # получить Местоположения
     if all_locations:
-        await message.answer('Выбери местоположение корта:', reply_markup=generate_locations_keyboard(all_locations))
+        await message.answer('Выбери местоположение корта:', reply_markup=generate_locations_kb(all_locations))
     else:
         await message.answer('Нет доступных местоположений', reply_markup=main_kb())
 
@@ -53,6 +54,28 @@ async def send_reserve_court(call: CallbackQuery, state: FSMContext):
     if sel_courts:
         await send_courts(bot, user_id=call.from_user.id, all_courts=sel_courts)
 
+@show_reserves_router.callback_query(F.data.startswith('select_court_'))
+async def send_reserve_date(call: CallbackQuery, state: FSMContext):
+    """Функция вывода доступных дат"""
+    await call.answer()
+    await state.clear()
+    sel_court = call.data.replace('select_court_', '')
+    '''
+    sel_date = await get_date(court_name=sel_court)
+    if sel_date:
+        await send_date(bot, user_id=call.from_user.id, all_time=sel_date)
+    '''
+    await send_date(bot, user_id=call.from_user.id)
+
+@show_reserves_router.callback_query(F.data.startswith('select_date_'))
+async def send_reserve_time(call: CallbackQuery, state: FSMContext):
+    """Функция вывода доступного времени"""
+    await call.answer()
+    await state.clear()
+    sel_court = call.data.replace('select_date_', '')
+    sel_time = await get_time(court_name=sel_court)
+    if sel_time:
+        await send_time(bot, user_id=call.from_user.id, all_time=sel_time)
 '''
 @show_reserves_router.callback_query(F.data.startswith('select_court_'))
 async def send_reserve_time(call: CallbackQuery, state: FSMContext):

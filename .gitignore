@@ -18,3 +18,5 @@ __pycache__/
 exel_files/
 
 .sqlite3
+
+test.py

@@ -1,6 +1,7 @@
 import asyncio
 from keyboards.reply_menu_kb import main_kb
-from keyboards.gen_other_kb import generate_courts_keyboard
+from keyboards.gen_other_kb import generate_courts_kb,generate_date_kb
+from keyboards.reply_reserve_kb import reserve_time
 
 
 async def send_message_user(bot, user_id, content_text=None, kb=None):
@@ -38,12 +39,56 @@ async def send_post(bot, user_id, all_news):
 
 async def send_courts(bot, user_id, all_courts):
     """Функция для вывода Кортов"""
-    for court in all_courts:
+    try:
+        await send_message_user(bot=bot,
+                                user_id=user_id,
+                                content_text=f'Выбери доступный корт:',
+                                kb=generate_courts_kb(courts=all_courts))
+    except Exception as E:
+        print(f'Error: {E}')
+        await asyncio.sleep(2)
+    finally:
+        await asyncio.sleep(0.5)
+    '''
+        for court in all_courts:                        # ПРОВЕРИТЬ НЕОБХОД
         try:
             await send_message_user(bot=bot,
                                     user_id=user_id,
-                                    content_text=f'Выбери доступный корт',
-                                    kb=generate_courts_keyboard(all_courts))
+                                    content_text=f'Выбери доступный корт:',
+                                    kb=generate_courts_kb(courts=all_courts))
+        except Exception as E:
+            print(f'Error: {E}')
+            await asyncio.sleep(2)
+        finally:
+            await asyncio.sleep(0.5)
+    '''
+
+
+
+async def send_date(bot, user_id ):
+    ''' ^ all_date'''
+    """Функция для вывода Времени"""
+    #for res_date in all_date:
+    try:
+        await send_message_user(bot=bot,
+                                user_id=user_id,
+                                content_text=f'Выбери доступную дату:',
+                                kb=generate_date_kb())
+    except Exception as E:
+        print(f'Error: {E}')
+        await asyncio.sleep(2)
+    finally:
+        await asyncio.sleep(0.5)
+
+
+async def send_time(bot, user_id, all_time):
+    """Функция для вывода Времени"""
+    for rev_time in all_time:
+        try:
+            await send_message_user(bot=bot,
+                                    user_id=user_id,
+                                    content_text=f'Выбери доступное время:',
+                                    kb=reserve_time(all_time))
         except Exception as E:
             print(f'Error: {E}')
             await asyncio.sleep(2)
